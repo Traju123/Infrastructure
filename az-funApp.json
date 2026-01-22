@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionAppName": {
+      "type": "string",
+      "defaultValue": "myFunctionApp",
+      "metadata": { "description": "Name of the Function App" }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "Central India",
+      "metadata": { "description": "Azure region" }
+    },
+    "hostingPlanName": {
+      "type": "string",
+      "defaultValue": "myFunctionPlan",
+      "metadata": { "description": "App Service Plan name" }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('hostingPlanName')]",
+      "location": "[parameters('location')]",
+      "sku": { "name": "Y1", "tier": "Dynamic" },
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('functionAppName')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+      }
+    }
+  ]
+}
